@@ -1,0 +1,863 @@
+\documentclass[letterpaper]{article}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{bremark}[theorem]{Remark}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\numberwithin{equation}{section}
+
+\newcommand{\sfk}{\operatorname{sf}}
+
+\title{A Resolution of Erdos 374}
+\author{Jonathan S. Hartley\thanks{Lean files forthcoming.} \and Matthew A. Olson \and Jusvin Dhillon}
+\date{September 21, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For a composite integer $m$, let $F(m)$ be the least number of distinct positive-index
+factorials, the largest being $m!$, whose product is a square, and put $D_6=\{m:F(m)=6\}$.
+We present a candidate proof that $D_6$ has positive lower density. More precisely, we construct
+a squarefree set $\mathcal A$ of positive natural density $\delta_A$ and show that almost every member of $\mathcal A$
+having a prime factor greater than $m^{99/100}$ belongs to $D_6$. This gives lower density at least
+$\delta_A\log(100/99)$. The argument combines a uniform lower bound for the logarithmic mass
+of valuation-one prime divisors of a long interval with a large-sieve count anchored at the
+largest prime factor of the endpoint. The analytic inputs are the prime number theorem,
+a published reciprocal-prime equidistribution estimate, Harman's almost-all short-interval
+theorem, Weil's bound, and the analytic large sieve.
+We also determine the order of growth of the classes $D_k=\{m:F(m)=k\}$ for $3\le k\le 6$:
+$D_3(X)=\kappa_3\sqrt X+O_\varepsilon(X^{2/5+\varepsilon})$ for an explicit constant $\kappa_3$,
+while $D_4$, $D_5$ and $D_6$ have positive lower density, and these growth results are verified in Lean.
+\end{abstract}
+
+\section{Introduction and statement}
+
+For $m>1$, define $F(m)$ to be the least $k\ge 2$ for which there are positive integers
+\[
+  1\le a_1<a_2<\cdots<a_k=m,\qquad a_1!a_2!\cdots a_k! \text{ a square.}
+\]
+Set $F(m)=\infty$ if no such representation exists, and let
+\[
+  D_6=\{m>1:F(m)=6\}.
+\]
+Erd\H{o}s and Graham studied the corresponding nested sets of endpoints representable with at
+most $k$ factorials. They showed, in particular, that every composite endpoint admits at most
+six factors, and asked whether $D_6$ has positive lower density [1, pp.~341, 354]. The minimum
+convention used here agrees with their difference-set convention for $m>1$. Including $1!$ does
+not change a minimum: it may be removed, and a single nontrivial factorial is not a square.
+
+For $n\ge 1$, let
+\[
+  \sfk(n)=\prod_{v_p(n)\ \text{odd}}p,\qquad q_a=\sfk(a!),\quad a\ge 0.
+\]
+Thus $q_0=q_1=1$. Define
+\begin{equation}
+  \mathcal A=\Bigl\{m\ge 1: m \text{ is squarefree and } \gcd(m,q_a)^2\le q_a \text{ for every } a\ge 2\Bigr\}.
+\end{equation}
+For $0<\alpha<1/2$, write
+\begin{equation}
+  \mathcal B_\alpha=\{m\in\mathcal A:P^+(m)>m^{1-\alpha}\},
+\end{equation}
+where $P^+(m)$ is the largest prime factor, and $P^+(1)=1$.
+
+\begin{theorem}[Main statement of the candidate proof]
+The set $\mathcal A$ has a positive natural density $\delta_A$. Moreover,
+\begin{equation}
+  \#(D_6\cap\mathcal B_{1/100}\cap[1,X])=\bigl(\delta_A\log(100/99)+o(1)\bigr)X.
+\end{equation}
+In particular,
+\[
+  \liminf_{X\to\infty}\frac{\#(D_6\cap[1,X])}{X}\ge\delta_A\log(100/99)>0.
+\]
+\end{theorem}
+
+The conclusion does not assert existence of the natural density of the whole set $D_6$, nor
+determine the other endpoint-counting functions in Problem 374. No effective value of $\delta_A$, and
+no effective threshold for the assembled argument, is claimed.
+
+\subsection{Structure and provenance of the argument}
+
+Write
+\[
+  P_h(t)=\prod_{i=0}^{h-1}(t-i).
+\]
+For a five-factor representation $a!b!c!d!m!$ with $a<b<c<d<m$, put
+\[
+  h=c-b,\qquad \ell=m-d.
+\]
+Cancellation of square factors gives
+\begin{equation}
+  a!b!c!d!m! \text{ square}\iff q_aP_h(c)P_\ell(m)\text{ square.}
+\end{equation}
+For four factors $b!c!d!m!$, use $q=1$ and formally $a=0$. The two-interval formulation, the
+paired-avoidance strategy, and the six-factor construction are classical [1]. Erd\H{o}s--Graham also
+established an almost-all result on the fixed-cofactor family $13p$; a fixed-cofactor prime family
+has density zero among all integers.
+
+The two main estimates here have different roles. A valuation-one prime-mass lemma shows
+that a polynomially long lower interval cannot be matched by a much shorter upper interval. A
+prime-anchor sieve then counts all remaining nonpaired representations when the endpoint has
+a very large prime factor. The candidate class $\mathcal A$ excludes the paired representations exactly.
+The density calculation for $\mathcal B_\alpha$ is by cofactor summation, not an independence assertion.
+
+The reciprocal-prime method is taken from the published theorem of Matom\"aki, Radziwi\l\l,
+Shao, Tao, and Ter\"av\"ainen [2]. Its use in interval anatomy in [7] provided methodological guidance.
+The proof below is self-contained apart from the external inputs stated in Section 2; none of
+the exploratory finite tables or earlier fixed-gap integral-point results is a logical dependency.
+Priority for the particular combination of estimates has not been established by a comprehensive
+literature review.
+
+\section{Notation and external inputs}
+
+All logarithms are natural. Intervals counted over integers are understood to include only
+their integer points. Write $\vartheta(x)=\sum_{p\le x}\log p$, and let $\pi(x)$ count primes. All assertions with
+``sufficiently large'' allow a threshold depending on explicitly fixed exponents. We use the
+quantitative prime number theorem
+\begin{equation}
+  \vartheta(x)=x+O\bigl(x\exp(-c\sqrt{\log x})\bigr)
+\end{equation}
+for an absolute $c>0$, as well as $\pi(x)\sim x/\log x$; see, for example, [4].
+
+\subsection{Reciprocal-prime equidistribution}
+
+We use the following published result, with $j=2$ throughout.
+
+\begin{proposition}[{[2, Proposition 1.13(ii)]}]
+Fix $\varepsilon>0$, $A_0>0$, and a natural number $j$. Let
+$P\ge 2$ and $I\subseteq[P,2P]$ be an interval. For real parameters
+\[
+  M,N=O\Bigl(\exp\bigl((\log P)^{3/2-\varepsilon}\bigr)\Bigr)
+\]
+and a smooth $\mathbb Z^2$-periodic function $W$, one has
+\begin{equation}
+  \sum_{p\in I}W\Bigl(\frac Np,\frac M{p^j}\Bigr)
+  =\int_I W\Bigl(\frac Nt,\frac M{t^j}\Bigr)\frac{\mathrm dt}{\log t}
+  +O_{\varepsilon,A_0,j}\Bigl(\|W\|_{C^3}\frac{P}{(\log P)^{A_0}}\Bigr).
+\end{equation}
+Here the norm is a sum of supremum norms of derivatives of orders at most three.
+\end{proposition}
+
+The extra displayed dependence on the fixed $j$ is harmless; only $j=2$ is used. The numbering
+above is that of the published paper, not the initial preprint. Crucially, the main term is an
+integral \emph{along the same reciprocal curve}. It does not state independence of its coordinates. The
+explicit norm factor allows the cutoff to depend on $X$.
+
+\subsection{Almost-all prime intervals}
+
+Harman's theorem [3] implies that, for every fixed $\theta>1/10$, all but $o(X)$ integers $m\le X$ have
+a prime in
+\begin{equation}
+  (m-m^\theta,m].
+\end{equation}
+The exceptional estimate from the cited proof is $O_\theta(X/\log X)$; only $o(X)$ is needed for
+Theorem 1.1. To obtain the integer backward form from a real forward formulation, choose
+$\theta_0\in(1/10,\theta)$. On $X<m\le 2X$, set $L=(2X)^{\theta_0}$ and $C=\lceil L\rceil+2$. A bad integer $m$ makes every
+start in $[m-C,m-C+1/2]$ bad for a forward interval of length $x^{\theta_0}$. For large $X$ these intervals
+lie within (2.3), and the half-unit sets of starts are disjoint. Harman's exceptional-measure
+estimate therefore bounds the bad integers; dyadic summation gives the stated form. See also
+the discussion of the exceptional-set strength in [7, Remark 2.4].
+
+\subsection{Quadratic characters and the large sieve}
+
+Let $\chi_p$ be the quadratic character modulo an odd prime, with $\chi_p(0)=0$. If $f\in\mathbb F_p[z]$ is not a
+scalar times a square, Weil's bound, with the zero corrections from any removed square factors,
+gives
+\begin{equation}
+  \Bigl|\sum_{z \bmod p}\chi_p(f(z))\Bigr|\ll(\deg f)\sqrt p.
+\end{equation}
+We use the usual coefficient-uniform form [5].
+
+For a $\Delta$-separated set $\mathcal T\subset\mathbb R/\mathbb Z$, the analytic large sieve gives
+\begin{equation}
+  \sum_{\theta\in\mathcal T}\Bigl|\sum_{1\le n\le L}a_n\mathrm e^{2\pi in\theta}\Bigr|^2
+  \ll(L+\Delta^{-1})\sum_{1\le n\le L}|a_n|^2.
+\end{equation}
+We only need $\Delta\ge 1/(4L)$ [4, 6]. All applications below check good reduction and keep zero
+among the allowed residues for integer squares.
+
+\section{A positive-density set excluding paired representations}
+
+\begin{lemma}[Size of factorial square classes]
+As $a\to\infty$,
+\[
+  \log q_a\ge(1/2+o(1))a,\qquad \omega(q_a)=O(a/\log a).
+\]
+In particular $q_a\ge\exp(a/3)$ for all sufficiently large $a$.
+\end{lemma}
+
+\begin{proof}
+Every prime $a/2<p\le a$ occurs once in $a!$, so its product divides $q_a$. Apply (2.1). Every
+prime factor of $q_a$ is at most $a$, giving the second assertion by the prime number theorem.
+\end{proof}
+
+\begin{lemma}
+The set $\mathcal A$ in (1.1) has a positive natural density $\delta_A$ and is closed under taking
+squarefree divisors.
+\end{lemma}
+
+\begin{proof}
+Failure of the $a$-th gcd condition forces divisibility of $m$ by some $d\mid q_a$ with $d>\sqrt{q_a}$.
+Uniformly for every $X\ge 1$, the proportion of integers $m\le X$ having this failure is at most
+\begin{equation}
+  \sum_{\substack{d\mid q_a\\ d>\sqrt{q_a}}}\frac1d\le\frac{2^{\omega(q_a)}}{\sqrt{q_a}}
+  \le\exp\bigl(-(1/4-o(1))a\bigr).
+\end{equation}
+Here $\lfloor X/d\rfloor\le X/d$ is why the estimate is uniform in the prefix. The bound is summable in $a$.
+
+For fixed $B$, squarefree integers with no prime factor at most $B$ have density
+\[
+  \delta_B=\frac{6}{\pi^2}\prod_{p\le B}(1+1/p)^{-1}\asymp\frac{1}{\log B}.
+\]
+They satisfy every gcd condition with $a\le B$. Removing all violations with $a>B$ costs
+$O(\exp(-cB))$, by (3.1), which is smaller than $\delta_B$ for large $B$. Thus $\mathcal A$ has positive lower density.
+
+For each fixed number of gcd conditions, the intersection with the squarefree integers has a
+natural density. One may see this by imposing finitely many prime-square exclusions and then
+using the tail bound $\sum_{p>T}p^{-2}$; the other conditions are periodic. Equation (3.1) gives uniform
+convergence of these finite-condition densities to the density of $\mathcal A$. Finally, if $d\mid m$ is squarefree,
+then $\gcd(d,q_a)\le\gcd(m,q_a)$ for every $a$, proving closure under divisors.
+\end{proof}
+
+\begin{lemma}[Paired exclusion]
+If $m\in\mathcal A$ and $1\le c<m$, then $q_acm$ is not a square for any
+$a\ge 1$ compatible with the factorial ordering. The same holds for $cm$.
+\end{lemma}
+
+\begin{proof}
+Let $g=\gcd(m,q_a)$. Since $m,q_a$ are squarefree, squareness would force
+\[
+  c=\frac{q_am}{g^2}z^2
+\]
+for some integer $z\ge 1$. The definition of $\mathcal A$ gives $g^2\le q_a$, hence $c\ge m$, a contradiction. For
+$a=1$ or multiplier $1$, the same reasoning gives $c=mz^2$.
+\end{proof}
+
+This excludes precisely the gap pair $(h,\ell)=(1,1)$ in the four- and five-factor problems. It
+does not exclude arbitrary shorter representations.
+
+\begin{lemma}[Cofactor inheritance]
+Fix $0<\alpha<1/2$. For all sufficiently large $m=rP$ with
+$P>m^{1-\alpha}$ prime,
+\[
+  m\in\mathcal A\iff r\in\mathcal A.
+\]
+\end{lemma}
+
+\begin{proof}
+We have $P>r$ and $P^2>m$. Thus squarefreeness of $rP$ is equivalent to that of $r$. If
+$a<P$, then $P\nmid q_a$, so $\gcd(rP,q_a)=\gcd(r,q_a)$. If $a\ge P$, Lemma 3.1 gives
+\[
+  q_a\ge\exp(a/3)\ge\exp(P/3)>m^2
+\]
+for sufficiently large $m$. Both gcd conditions are then automatic. This proves the equivalence
+for \emph{all} factorial indices, not merely those below $m$.
+\end{proof}
+
+\begin{proposition}[Density of the large-prime subfamily]
+For $0<\alpha<1/2$,
+\begin{equation}
+  \#(\mathcal B_\alpha\cap[1,X])=\Bigl(\delta_A\log\frac{1}{1-\alpha}+o(1)\Bigr)X.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Put $\beta=(1-\alpha)/\alpha>1$. The inequality $P>(rP)^{1-\alpha}$ is equivalent to $P>r^\beta$. The large
+prime is unique. Lemma 3.4 therefore gives, up to finitely many initial exceptions,
+\begin{equation}
+  \#(\mathcal B_\alpha\cap[1,X])=\sum_{\substack{r\le X^\alpha\\ r\in\mathcal A}}\bigl(\pi(X/r)-\pi(r^\beta)\bigr)+O(1).
+\end{equation}
+Boundary values are interpreted using $\pi(t)=\#\{p\le t\}$, so the strict inequality at the lower
+endpoint is correct.
+
+The second sum is $O_\alpha(X/\log X)$. Indeed, the range $r\le X^{\alpha/2}$ is $O(X^{1/2})$ by the trivial
+bound $\pi(r^\beta)\le r^\beta$, and on the other range the elementary prime upper bound saves a factor
+$\log X$.
+
+In the first sum, $X/r\ge X^{1-\alpha}$, so the prime number theorem has a uniform relative $o(1)$
+error. Partial summation using $\#(\mathcal A\cap[1,t])=\delta_At+o(t)$ gives
+\begin{align*}
+  \sum_{\substack{r\le X^\alpha\\ r\in\mathcal A}}\frac{1}{r\log(X/r)}
+  &=\delta_A\int_1^{X^\alpha}\frac{\mathrm dt}{t\log(X/t)}+o(1)\\
+  &=\delta_A\log\frac{1}{1-\alpha}+o(1).
+\end{align*}
+For error control, fix $T_0$ so the counting-function error is at most $\epsilon t$ above $T_0$. The integral of $t$
+times the absolute derivative of $1/(t\log(X/t))$ is $O_\alpha(1)$; the finite part tends to zero, and then $\epsilon$
+tends to zero. Substituting in (3.3) proves the result. Prime endpoints correspond to $r=1$ and
+may be removed without changing the density.
+\end{proof}
+
+\section{Valuation-one prime mass in a long interval}
+
+The following lemma supplies the uniform comparison between the two interval lengths.
+
+\begin{lemma}[Valuation-one prime mass]
+Fix $0<\gamma<1$. For all sufficiently large $X$ depending
+on $\gamma$, suppose integers $0\le a<b<c\le X$ satisfy
+\[
+  h=c-b\ge X^\gamma,\qquad a\le 10h\log X.
+\]
+There is a squarefree integer $R$, composed of primes $p>a$ with $v_p(P_h(c))=1$, such that
+\begin{equation}
+  \log R\ge h/4096.
+\end{equation}
+The assertion is uniform in $a,b,c$ in the displayed range.
+\end{lemma}
+
+\subsection{The dense range}
+
+Put $U=\log X$ and $P=hU^2$. Suppose $b\le 100P$. Let
+\[
+  J=(\max(b,c/2),c],\qquad L=|J|=\min(h,c/2).
+\]
+Then $L\ge h/2$, while $c\le 101hU^2$ gives $L\ge c/(202U^2)$. Since $c\ge X^\gamma$, the quantitative prime
+number theorem gives, uniformly,
+\[
+  \vartheta(c)-\vartheta(c-L)=L+o(L)\ge h/4.
+\]
+Both endpoints are on the $c$ scale, and the error divided by $L$ is $O(U^2\exp(-c_\gamma\sqrt U))=o(1)$.
+Every prime in $J$ exceeds $b>a$ and $c/2$, and so occurs exactly once in $P_h(c)$. This proves more
+than (4.1). It also covers cases in which the auxiliary quantity $P$ exceeds $X$.
+
+\subsection{Cutoffs in the sparse range}
+
+Assume henceforth $b>100P$. Then, for sufficiently large $X$,
+\[
+  P>a,h,\qquad c<2b,\qquad 2P<X.
+\]
+Set
+\[
+  \delta=\frac{h}{4P}=\frac{1}{4U^2}.
+\]
+Choose a smooth $1$-periodic $0\le\phi_\delta\le 1$ supported where
+\[
+  \tfrac12\delta\le 1-\{x\}\le\delta,
+\]
+and equal to one where $1-\{x\}\in[5\delta/8,7\delta/8]$. A fixed bump on $[1/2,1]$, rescaled and periodized,
+gives
+\begin{equation}
+  \int_0^1\phi_\delta(x)\,\mathrm dx\ge\delta/4,\qquad \|\phi_\delta\|_{C^3}=O(\delta^{-3})=O(U^6).
+\end{equation}
+Choose a fixed smooth periodic $0\le\psi\le 1$, supported where the fractional part lies in
+$(1/20,17/20)$ and equal to one on $[9/100,81/100]$.
+
+If $P\le p\le 2P$ and $\phi_\delta(b/p)>0$, the next multiple of $p$ after $b$ lies at distance between $\delta p/2$
+and $\delta p$, hence within $h/2$. It is the unique multiple in $(b,b+h]$ because $p>h$.
+
+If $P>\sqrt{2b}$, then $p^2>c$ and its valuation is one. In this case take $W(x,y)=\phi_\delta(x)$.
+Otherwise take
+\[
+  W(x,y)=\phi_\delta(x)\psi(y).
+\]
+A positive value of $W(b/p,b/p^2)$ then places the next multiple of $p^2$ at distance greater than
+$3p^2/20>h$ after $b$. Thus the selected multiple of $p$ again has valuation exactly one. Every
+selected prime exceeds $a$. In both cases,
+\begin{equation}
+  \|W\|_{C^3}=O(U^6).
+\end{equation}
+
+\begin{remark}
+The second coordinate is essential when $p^2$ can lie below $c$. A cutoff that only
+detects a multiple of $p$ does not distinguish valuation one from valuation two. For a finite check
+consistent with $P=h(\log X)^2$, take $p=1\,000\,003$, $h=1000$, $b=p^2-250$, and $X=c=b+h$.
+Rational logarithm enclosures give $P<p<2P$, $b>100P$, and
+\[
+  \frac58<\frac{1-\{b/p\}}{\delta}=\frac Pp<\frac78.
+\]
+Thus $\phi_\delta(b/p)=1$, while $p^2\in(b,c]$ and $v_p(P_h(c))=2$. Since $\{b/p^2\}>17/20$, the second cutoff
+vanishes. This checks strict plateau membership, not just membership in the closed support; it
+does not verify the eventual starting threshold of Lemma 4.1. No assertion about odd valuation
+below uses the first coordinate alone when $p^2$ can lie below $c$.
+\end{remark}
+
+\subsection{The correlated continuous main term}
+
+We prove in either sparse subcase that
+\begin{equation}
+  I=\int_P^{2P}W\Bigl(\frac bt,\frac b{t^2}\Bigr)\frac{\mathrm dt}{\log t}\ge\frac{h}{320\log(2P)}.
+\end{equation}
+Make the substitution $s=b/t$ and write $A=b/P>100$. Then $s\in[A/2,A]$, and
+\begin{equation}
+  \frac{b}{s^2\log(b/s)}\ge\frac{b}{A^2\log(2P)}.
+\end{equation}
+If no second cutoff is needed, there are at least $A/2-2\ge A/3$ complete unit cells, each
+contributing at least $\delta/4$ by (4.2). This gives a stronger bound than (4.4).
+
+For the other subcase, put $B=b/P^2\ge 1/2$. As $s$ varies, $y=s^2/b$ ranges over $[B/4,B]$, of
+length $3B/4\ge 3/8$. We use the exact elementary fact
+\begin{equation}
+  \inf_x\bigl|[x,x+L]\cap\{y:\{y\}\in[1/10,4/5]\}\bigr|=\frac{7}{10}\lfloor L\rfloor+\max\Bigl(0,\{L\}-\frac{3}{10}\Bigr).
+\end{equation}
+Indeed every complete period contributes $7/10$, and the remaining interval of length $\{L\}$ can
+lose at most the complementary arc of length $3/10$. In particular the right side is at least $L/5$
+for $L\ge 3/8$.
+
+Thus the good $y$-measure is at least $3B/20$. Since
+\[
+  \frac{\mathrm ds}{\mathrm dy}=\frac{\sqrt b}{2\sqrt y}\ge\frac{\sqrt b}{2\sqrt B},
+\]
+the corresponding good set in $s$ has measure at least $3A/40$. Discard the two possible partial
+unit cells at the endpoints. At least
+\[
+  3A/40-2\ge A/20
+\]
+complete unit cells meet the good set. On each such cell the variation of $s^2/b$ is at most
+$2/P<1/100$ for large $X$. Since one point has fractional part in $[1/10,4/5]$, the whole cell lies in
+the plateau $[9/100,81/100]$ of $\psi$. The margins also prevent wraparound at an integer.
+
+Each of these cells contributes at least $\delta/4$ to the $s$ integral. By (4.5),
+\[
+  I\ge\frac{b}{A^2\log(2P)}\,\frac{A}{20}\,\frac{\delta}{4}=\frac{P\delta}{80\log(2P)}=\frac{h}{320\log(2P)}.
+\]
+This establishes the lower bound along the actual correlated curve.
+
+\subsection{Transfer to primes and conclusion}
+
+Apply Proposition 2.1 with
+\[
+  \varepsilon=1/4,\qquad A_0=20,\qquad j=2,\qquad M=N=b.
+\]
+Because $P\ge X^\gamma U^2$,
+\[
+  \log P\ge\gamma U,\qquad b\le X\le\exp\bigl((\log P)^{5/4}\bigr)
+\]
+for all sufficiently large $X$ depending only on $\gamma$.
+\[
+  \frac{(\log P)^{5/4}}{\log X}\ge\gamma^{5/4}(\log X)^{1/4}\longrightarrow\infty\qquad(X\to\infty,\ \gamma>0 \text{ fixed}).
+\]
+Thus its phase hypothesis holds uniformly. Equations (4.3) and (2.2) bound the error by
+\[
+  O_\gamma\Bigl(U^6\frac{hU^2}{U^{20}}\Bigr)=O_\gamma(h/U^{12}).
+\]
+In the sparse range, $\log(2P)\le U$, so the error is $o(h/\log(2P))$. Therefore
+\[
+  \sum_{P\le p\le 2P}W(b/p,b/p^2)\ge\frac{h}{640\log(2P)}.
+\]
+The weights are in $[0,1]$. Take $R$ to be the product of the primes with positive weight. The
+valuation statement proved above holds for every such prime, and
+\[
+  \log R\ge\frac{h\log P}{640\log(2P)}\ge h/1280.
+\]
+This implies the weaker constant in (4.1) and completes the proof of Lemma 4.1.
+
+\begin{corollary}[Comparison of interval lengths]
+Fix $\gamma>0$. For sufficiently large $m$, every
+four- or five-factor square representation with $h\ge\ell$ and $h\ge m^\gamma$ satisfies
+\begin{equation}
+  h\le 4096\,\ell\log m.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Squareness in (1.4) implies $q_a\mid P_h(c)P_\ell(m)$, hence $q_a\le m^{h+\ell}$. Lemma 3.1 gives
+\[
+  a\le 3(h+\ell)\log m+O(1)\le 10h\log m
+\]
+eventually. Apply Lemma 4.1 with $X=m$ (and $a=0$ for four factors). Each prime in $R$ is
+absent from $a!$ and occurs once in the lower interval. To make the total product a square it must
+divide the upper interval product. Thus
+\[
+  R\mid P_\ell(m),\qquad h/4096\le\log R\le\log P_\ell(m)\le\ell\log m.
+\]
+No restriction on the separation of the intervals is used.
+\end{proof}
+
+\section{The uniform large-prime-anchor sieve}
+
+\begin{proposition}
+Fix $\alpha,\eta>0$ with
+\begin{equation}
+  3\alpha+8\eta<1.
+\end{equation}
+Among endpoints $m\le X$ with $P^+(m)>m^{1-\alpha}$, the number admitting a nonpaired five-factor
+square representation with $h,\ell\le m^\eta$ is
+\begin{equation}
+  O_{\alpha,\eta}\Bigl(X^{1/2+3\alpha/2+4\eta}(\log X)^2\Bigr).
+\end{equation}
+For four factors it is
+\begin{equation}
+  O_{\alpha,\eta}\Bigl(X^{1/2+3\alpha/2+3\eta}\log X\Bigr).
+\end{equation}
+All bottom indices and all interval separations are included. Squarefreeness of $m$ is not assumed.
+\end{proposition}
+
+\begin{proof}
+Work first on $X/2<m\le X$. Put $H=X^\eta$, $R=X^\alpha$, and $m=rP$ with $P=P^+(m)$.
+Then
+\[
+  r\le R,\qquad P\ge X/(2R),\qquad P^2>m,
+\]
+since (5.1) implies $\alpha<1/3$. The factorial-size bound used above gives
+\begin{equation}
+  a\le 6H\log X+O(1).
+\end{equation}
+For large $X$, $a,h,\ell<P$. The prime $P$ occurs once in the upper interval, at $m$, and is absent
+from $a!$. It must therefore divide a lower-interval member. As $h<P$, this member is unique, so
+\begin{equation}
+  c=jP+t,\qquad 1\le j<r,\qquad 0\le t<h.
+\end{equation}
+If $r=1$, no such $j$ exists.
+
+After cancelling the two factors $P$, the square condition is that $f(P)$ is an integer square,
+where
+\begin{equation}
+  f(z)=q_arj\prod_{i=1}^{\ell-1}(rz-i)\prod_{\substack{0\le v<h\\ v\ne t}}(jz+t-v).
+\end{equation}
+The two rational root lists, with multiplicity, are
+\begin{equation}
+  \Bigl\{\frac ir:1\le i<\ell\Bigr\},\qquad \Bigl\{\frac{v-t}{j}:0\le v<h,\ v\ne t\Bigr\}.
+\end{equation}
+Outside $(h,\ell)=(1,1)$, $f$ is not a scalar times a square. If $t>0$, the second list has an unmatched
+negative root. If $t=0$ and exactly one list is empty, every root in the nonempty list has odd
+multiplicity, so again $f$ is not a scalar times a square. If $t=0$ and both lists are nonempty,
+all roots are positive. For every root to occur evenly, the lists would have to coincide, forcing
+$1/r=1/j$, impossible because $j<r$. Both lists are empty precisely in the excluded paired case.
+
+Fix $a,r,j,t,h,\ell$, and set $L=X/r$. Use auxiliary primes
+\[
+  \sqrt L<\lambda\le 2\sqrt L.
+\]
+The parameter condition gives
+\begin{equation}
+  \alpha+\eta<(1-\alpha)/2,\qquad \eta<(1-\alpha)/4.
+\end{equation}
+Together with (5.4), these imply $H=o(\sqrt\lambda)$ uniformly. In particular, for all sufficiently large $X$,
+uniformly over every tuple,
+\[
+  \lambda>\max(a,2RH),\qquad \lambda\ge 64H^2.
+\]
+These are consequences of the fixed parameter inequalities, not additional hypotheses. Thus
+$\lambda\nmid q_arj$. Nonzero cross-multiplied differences between roots in (5.7) have absolute value at most
+$2RH$, so distinct rational roots remain distinct modulo $\lambda$; exact doubled roots remain doubled.
+The nonsquare property survives reduction.
+
+Apply the squarefree form of Weil's bound to the odd-multiplicity factors, and add at most
+one unit of error for each removed double root. Since the total degree is at most $2H$, this gives
+the explicit form of (2.4)
+\[
+  \Bigl|\sum_{z\bmod\lambda}\chi_\lambda(f(z))\Bigr|\le 2H\sqrt\lambda.
+\]
+If $z_\lambda$ is the number of zero residues, then $z_\lambda\le 2H$. Hence the number $\rho_\lambda$ of square-or-zero
+values satisfies
+\[
+  \rho_\lambda=\frac{\lambda+z_\lambda+\sum_z\chi_\lambda(f(z))}{2}\le\frac\lambda2+H+H\sqrt\lambda\le\frac{3\lambda}{4},
+\]
+where the last inequality follows from $\lambda\ge 64H^2$ and $H\ge 1$. All estimates are uniform in the
+tuple, and zero values have been included.
+
+Let $T\subseteq[1,L]\cap\mathbb Z$ be the integer arguments where $f$ is a square, and put $J=\#T$. This
+contains every prime argument arising from the original representation. If $n_\lambda(u)$ is the number
+of members of $T$ in residue class $u$, orthogonality and Cauchy--Schwarz give
+\begin{align*}
+  \sum_{b=1}^{\lambda-1}\Bigl|\sum_{z\in T}\mathrm e^{2\pi ibz/\lambda}\Bigr|^2
+  &=\lambda\sum_u n_\lambda(u)^2-J^2\\
+  &\ge(\lambda/\rho_\lambda-1)J^2\ge J^2/3.
+\end{align*}
+The fractions $b/\lambda$ are separated modulo one by at least $1/(4L)$. By (2.5), their combined energy
+is $O(LJ)$. The prime number theorem supplies $\gg\sqrt L/\log L$ auxiliary primes. Hence, also when
+$J=0$,
+\begin{equation}
+  J\ll\sqrt L\log L\ll\sqrt{X/r}\,\log X.
+\end{equation}
+
+For each $r$, there are at most $r$ choices for $j$, $H$ for $\ell$, $O(H^2)$ for $(h,t)$, and $O(H\log X)$ for
+$a$. Summing (5.9) gives
+\[
+  O\Bigl(H^4\sqrt X(\log X)^2\sum_{r\le R}\sqrt r\Bigr)=O\Bigl(\sqrt XH^4R^{3/2}(\log X)^2\Bigr).
+\]
+This proves the dyadic five-factor bound. Omitting the $a$-sum proves the four-factor bound.
+Dyadic summation preserves the displayed powers, proving the proposition.
+\end{proof}
+
+\begin{remark}[Uniformity and scope]
+The polynomial in (5.6) may take square values; the proof
+only asserts that it is not itself a scalar multiple of a polynomial square. The sieve includes zeros,
+and its count explicitly pays for all six tuple variables $a,r,j,t,h,\ell$. No bound on the numerical
+height of $q_a$ is needed for good reduction: the auxiliary primes exceed $a$. This is an application
+of standard character-sum and large-sieve methods, not a claim that those methods are new.
+\end{remark}
+
+\section{Short upper gaps and completion of the argument}
+
+\begin{lemma}[The second-largest factorial index]
+Outside $O(X/\log X)$ integers $m\le X$ and
+finitely many initial values, every square product of at least two distinct factorials with largest
+index $m$ and second-largest index $d$ satisfies
+\[
+  \ell=m-d\le m^{11/100}.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $p_-(m)$ be the largest prime at most $m$. Bertrand's postulate gives $p_-(m)>m/2$
+for large $m$. If $d<p_-(m)$, that prime occurs once in $m!$ and in none of the other factorials, a
+contradiction. Thus
+\[
+  \ell\le m-p_-(m).
+\]
+Apply (2.3) with $\theta=11/100$. The exceptional set depends only on the endpoint $m$, so the
+assertion holds for every representation there simultaneously.
+\end{proof}
+
+\begin{corollary}
+Outside the same exceptional endpoint set and finitely many initial values, every
+four- or five-factor representation has
+\[
+  h<m^{3/25},\qquad \ell\le m^{11/100}<m^{3/25}.
+\]
+\end{corollary}
+
+\begin{proof}
+If $h\ge m^{3/25}$, then $h\ge\ell$ for sufficiently large $m$. Corollary 4.3, with the fixed exponent
+$\gamma=3/25$, gives
+\[
+  h\le 4096\ell\log m\le 4096m^{11/100}\log m<m^{3/25},
+\]
+a contradiction. The repair lemma is uniform, so no union over representations or gaps is
+needed.
+\end{proof}
+
+\subsection{Proof of Theorem 1.1}
+
+Choose
+\[
+  \alpha=1/100,\qquad \theta=11/100,\qquad \eta=3/25.
+\]
+The parameter comparisons, including the narrowest final saving, are
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Comparison & Value or positive margin\\
+\midrule
+$\theta-1/10$ & $1/100$\\
+$\eta-\theta$ & $1/100$\\
+$1-(3\alpha+8\eta)$ & $1/100$\\
+$1-(1/2+3\alpha/2+4\eta)$ & $1/200$\\
+$1-(1/2+3\alpha/2+3\eta)$ & $1/8$\\
+$(1-\alpha)/2-(\alpha+\eta)$ & $73/200$\\
+$(1-\alpha)/4-\eta$ & $51/400$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Proposition 3.5 gives $\mathcal B_{1/100}$ density $\delta_A\log(100/99)>0$. Delete its prime members, the bad
+endpoints of Lemma 6.1, and finitely many initial values. By Corollary 6.2, any four- or five-factor
+representation at a remaining endpoint has both gaps below $m^\eta$. The paired case is excluded by
+Lemma 3.3. Proposition 5.1 bounds all the nonpaired cases by
+\begin{equation}
+  O\Bigl(X^{199/200}(\log X)^2\Bigr)+O\Bigl(X^{7/8}\log X\Bigr)=o(X).
+\end{equation}
+
+Two- and three-factor representations can be excluded directly on this population. Let
+$P=P^+(m)>m^{99/100}$. It occurs once in $m$, exceeds $\ell$, and thus occurs once in $P_\ell(m)$. A
+two-factor representation would make $P_\ell(m)$ a square, which is impossible. A three-factor
+representation $a!d!m!$ would make $q_aP_\ell(m)$ square. It forces
+\[
+  a\le 3\ell\log m+O(1)<P.
+\]
+So $P$ is absent from $q_a$ and again has odd valuation in the total product. This also covers $a=1$.
+
+Finally, for any composite $m=uv$, $u,v\ge 2$, the classical identity
+\begin{equation}
+  [(u-1)!u!][(v-1)!v!][(m-1)!m!]=\bigl[m(u-1)!(v-1)!(m-1)!\bigr]^2
+\end{equation}
+supplies at most six factorials. Equal indices can be cancelled in pairs; they remove square
+factors, retain the largest index $m$, and leave distinct positive indices. At least two remain
+because $m!$ is not a square for $m>1$, again by Bertrand's postulate. Thus every composite
+endpoint has $F(m)\le 6$.
+
+For clarity, the full exception ledger is
+\begin{equation}
+\begin{split}
+  \#\bigl((\mathcal B_{1/100}\setminus D_6)\cap[1,X]\bigr)&\le\pi(X)+E_{\mathrm H}(X)+O(1)\\
+  &\quad+O\Bigl(X^{199/200}(\log X)^2\Bigr)+O\Bigl(X^{7/8}\log X\Bigr),
+\end{split}
+\end{equation}
+where $E_{\mathrm H}(X)=O(X/\log X)$ is the one endpoint exceptional set from Harman. Hence the
+left-hand side is $o(X)$ (indeed $O(X/\log X)$ with the cited exceptional bound). Subtracting it
+from (3.2) proves (1.3) and the positive-lower-density conclusion. The $O(X/\log X)$ estimate
+applies to the exceptional difference $\mathcal B_{1/100}\setminus D_6$; Proposition 3.5 supplies only an $o(X)$ error for
+the count of $\mathcal B_{1/100}$ itself. No $O(X/\log X)$ remainder is asserted in (1.3).
+\qed
+
+\begin{bremark}[Why the exponent matters]
+This parameter scheme requires $\theta<\eta$ and
+$3\alpha+8\eta<1$. It therefore needs an available almost-all prime-interval exponent below $1/8$. Harman's
+$1/10+\varepsilon$ range supplies that margin. A theorem available only above $2/15$ would not close the same
+parameter choice.
+\end{bremark}
+
+\section{Order of growth of the other endpoint classes}\label{sec:growth}
+
+For $k\ge 2$ put $D_k=\{m>1:F(m)=k\}$ and $D_k(X)=\#(D_k\cap[1,X])$. Let $\mathcal Q$ be the set of
+distinct values $q_a\ne 1$ with $a\ge 1$, and put
+\[
+  \kappa_3=\sum_{q\in\mathcal Q}q^{-1/2}=2.70975\ldots .
+\]
+The series converges by Lemma~3.1: a value first attained at index $a$ is at least $\exp(a/3)$ for
+large $a$.
+
+\begin{theorem}\label{thm:growth}
+\begin{enumerate}
+\item[(i)] For every $\varepsilon>0$,
+  \[ D_3(X)=\kappa_3\sqrt X+O_\varepsilon\bigl(X^{2/5+\varepsilon}\bigr). \]
+  In particular $D_3(X)\asymp\sqrt X$, and $D_3$ has density zero.
+\item[(ii)] $\displaystyle\liminf_{X\to\infty}\frac{D_4(X)}{X}\ge\frac14$.
+\item[(iii)] $\displaystyle\liminf_{X\to\infty}\frac{D_5(X)}{X}\ge\frac{\log 2}{40000}$.
+\item[(iv)] $\displaystyle\liminf_{X\to\infty}\frac{D_6(X)}{X}\ge\delta_A\log(100/99)$.
+\end{enumerate}
+Consequently $D_k(X)\asymp X$ for $k=4,5,6$.
+\end{theorem}
+
+Part (iv) is Theorem~1.1. The constants in (ii) and (iii) are not optimized. For (i) and (iii), see
+also [8].
+
+\begin{remark}[Formal verification]
+Theorem~\ref{thm:growth} has been verified in Lean~4 with Mathlib, on top of the formalization of
+Theorem~1.1 and with no further hypotheses. The only axioms used are \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound}. The inputs of Section~2, Lemma~3.1, Lemma~4.1 and
+Proposition~5.1 enter through the same formal theorems as in the proof of Theorem~1.1.
+\end{remark}
+
+\subsection{Endpoints with nonconsecutive top indices}
+
+As in (1.4), a three-factor product $a!\,b!\,m!$ with $a<b<m$ and $h=m-b$ is a square exactly when
+$q_aP_h(m)$ is a square; a two-factor product $b!\,m!$ is the case $a=0$. Let $\mathcal E$ be the set of
+$m$ such that $q_aP_h(m)$ is a square for some $a\ge 0$ and $h\ge 2$ with $a+h<m$, and put
+$E(X)=\#(\mathcal E\cap[1,X])$.
+
+\begin{lemma}\label{lem:pellcount}
+Let $e_1,e_2,d\ge 1$. Then
+\[
+  \#\bigl\{u\le X:\ e_1u^2-e_2v^2=d \text{ for some } v\in\mathbb N\bigr\}
+  \le d^2\bigl(\log_2(2\sqrt{e_1}\,X)+1\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+For a solution put $\alpha=\sqrt{e_1}\,u+\sqrt{e_2}\,v$. Then $\alpha(\sqrt{e_1}\,u-\sqrt{e_2}\,v)=d$,
+so $\alpha$ determines $(u,v)$, and $1\le\alpha\le 2\sqrt{e_1}\,X$. Let $(u',v')$ be a second solution
+with $u\equiv u'$ and $v\equiv v'\pmod d$, and $\alpha'$ its value. Then
+$x=(e_1uu'-e_2vv')/d$ and $y=(vu'-uv')/d$ are integers. The identity
+$(e_1uu'-e_2vv')^2-e_1e_2(vu'-uv')^2=(e_1u^2-e_2v^2)(e_1u'^2-e_2v'^2)$ gives $x^2-e_1e_2y^2=1$, and
+$\alpha/\alpha'=x+y\sqrt{e_1e_2}$. If $x+y\sqrt{e_1e_2}>1$, its conjugate lies in $(0,1)$, so
+$x,y\ge 1$ and $x+y\sqrt{e_1e_2}\ge 2$. Hence the integers $\lfloor\log_2\alpha\rfloor$ are distinct
+within each of the at most $d^2$ residue classes of $(u,v)$ modulo $d$.
+\end{proof}
+
+\begin{lemma}\label{lem:E}
+$E(X)=O_\varepsilon(X^{2/5+\varepsilon})$ for every $\varepsilon>0$.
+\end{lemma}
+
+\begin{proof}
+Fix a small $\eta>0$, put $H=X^\eta$, and let $m\le X$ with $a,h$ as above. Since $q_a\mid P_h(m)$,
+Lemma~3.1 gives $a\le 3h\log X+O(1)$. If $h\ge X^{\eta/2}$, Lemma~4.1 with $\gamma=\eta/2$ supplies
+a prime $p>a$ with $v_p(P_h(m))=1$. That prime does not divide $q_a$, a contradiction. Hence
+$h<X^{\eta/2}$ and $a<X^{\eta}$, uniformly and with no exceptional endpoints. Put $\sigma=1/5$.
+
+\emph{Small kernel, $q_a\le X^{\sigma h}$.} A prime $p>h$ divides at most one of $m,\dots,m-h+1$.
+If it divides one of them to an odd power, it divides $q_a$. Bounding the primes $p\le h$ directly gives
+\[ \prod_{i<h}\mathrm{sf}(m-i)\le q_a\,h^h4^h. \]
+Hence two block elements $m-i=e_1u^2$ and $m-j=e_2v^2$ ($i<j<h$) have
+$e_1e_2\le 16h^2X^{2\sigma}$ and $e_1u^2-e_2v^2=j-i\in[1,H]$. By Lemma~\ref{lem:pellcount} each such
+equation has $O(H^2\log X)$ solutions with $u\le X$. Summing over $i,j$ and over
+$e_1e_2\le 16H^2X^{2\sigma}$ bounds the number of these endpoints by $X^{2\sigma+O(\eta)}$.
+
+\emph{Large kernel, $q_a>X^{\sigma h}$.} Fix $(a,h)$ and let $\mathcal T$ be the set of $m\le X$ with
+$q_aP_h(m)$ a square. For each prime $p\mid q_a$ with $p>h$, every $m\in\mathcal T$ lies in one of $h$
+residue classes modulo $p$. For each odd prime $p\le Y$, by (2.4) with the zero residues included, the
+values $m$ for which $q_aP_h(m)$ is a square or zero modulo $p$ occupy at most
+$(p+h+5h\sqrt p)/2$ classes. Gallagher's larger sieve [9] then bounds $\#\mathcal T$, and Mertens'
+theorem with $Y=X^{(1-\sigma)/2+O(\eta)}$ gives $\#\mathcal T\le X^{(1-\sigma)/2+O(\eta)}$.
+
+Both parts are $X^{2/5+O(\eta)}$ for $\sigma=1/5$, and there are $O(X^{2\eta})$ pairs $(a,h)$.
+Letting $\eta\to 0$ proves the lemma.
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:growth}}
+
+\emph{Consecutive top indices.} When $b=m-1$, the product $a!\,(m-1)!\,m!$ is a square exactly when
+$q_am$ is a square. Let $\mathcal C$ be the set of $m$ for which $q_am$ is a square for some $a<m$.
+Each $m\in\mathcal C$ has the form $q_at^2$, so by Lemma~3.1
+$\#(\mathcal C\cap[1,X])\le\sum_{a:\,q_a\le X}\sqrt{X/q_a}\ll\sqrt X$.
+
+A two-factor representation $b!\,m!$ of a nonsquare $m$ has $m-b\ge 2$, so $m\in\mathcal E$.
+A three-factor representation puts $m$ in $\mathcal C\cup\mathcal E$.
+
+(i) By the preceding paragraph, $D_3\subseteq\mathcal C\cup\mathcal E$, and squares are not in $D_3$.
+Conversely, let $m=qu^2$ with $q\in\mathcal Q$ first attained at index $a$. Then $a!\,(m-1)!\,m!$ is a
+square, and $a<m-1$ for all but finitely many such $m$. Since $m$ is not a square, $m\in D_3$ unless
+$m\in\mathcal E$. Distinct $q$ give disjoint families, since $q=\mathrm{sf}(m)$. Therefore
+\[
+  D_3(X)=\sum_{q\in\mathcal Q}\bigl\lfloor\sqrt{X/q}\,\bigr\rfloor+O\bigl(E(X)\bigr)+O(1)
+  =\kappa_3\sqrt X+O(\log X)+O\bigl(E(X)\bigr).
+\]
+The second step uses Lemma~3.1 twice: there are $O(\log X)$ values $q\le X$, and
+$\sum_{q>X}q^{-1/2}=O(X^{-1/2}\log X)$. Lemma~\ref{lem:E} gives (i).
+
+(ii) For $m=4u$ with $u\ge 2$,
+\[ (u-1)!\,u!\,(m-1)!\,m!=\bigl(2u\,(u-1)!\,(m-1)!\bigr)^2, \]
+so $F(m)\le 4$. A nonsquare $m$ with $F(m)\in\{2,3\}$ lies in $\mathcal C\cup\mathcal E$, which has
+density zero. Nonsquare multiples of $4$ have density $1/4$.
+
+(iii) Let $\mathcal T_5$ be the set of even squarefree $m$ with $P^+(m)>m^{99/100}$. For $m=2z$ with
+$z\ge 4$,
+\[ 2!\,(z-1)!\,z!\,(2z-1)!\,(2z)!=\bigl(2z\,(z-1)!\,(2z-1)!\bigr)^2, \]
+so $F(m)\le 5$. Now argue as in Section~6.1 with $\alpha=1/100$, $\theta=11/100$, $\eta=3/25$.
+Discard the exceptional endpoints of Lemma~6.1 and finitely many initial values.
+\begin{itemize}
+\item The prime $P=P^+(m)$ excludes two- and three-factor representations.
+\item By Corollary~6.2, both gaps of a four-factor representation are below $m^{3/25}$.
+\item The paired case $(h,\ell)=(1,1)$ would make $cm$ a square with $c<m$, which is impossible for
+  squarefree $m$ (Lemma~3.3, multiplier $1$).
+\item Proposition~5.1, which does not assume squarefreeness, bounds the nonpaired four-factor case
+  by $O(X^{7/8}\log X)$.
+\end{itemize}
+Hence $F(m)=5$ for all but $o(X)$ members of $\mathcal T_5\cap[1,X]$. Write $m=rP$ with $r<m^{1/100}$
+even and squarefree. Chebyshev's bounds, the positive density of even squarefree numbers, and partial
+summation give $\#(\mathcal T_5\cap[1,X])\ge(\log 2/40000)\,X$ for large $X$.
+
+(iv) This is Theorem~1.1. \qed
+
+\subsection*{Acknowledgments and disclosure}
+
+This work was prepared with AI assistance in derivation, internal checking, source verification,
+exposition, and formalization. We used a combination of ChatGPT Astra; Google's Gemini 3.1 Pro
+and Gemini 3.8 Flash; Anthropic's Claude Opus 5.5 and Claude Fable 5.1; and xAI's Grok 4.7. The
+classical factorial identities and avoidance ideas are credited to Erd\H{o}s--Graham, and the essential
+reciprocal-prime theorem to Matom\"aki, M. Radziwi\l\l, Shao, Tao, and Ter\"av\"ainen.
+
+\section*{References}
+
+\begin{enumerate}
+\item P. Erd\H{o}s and R. L. Graham, \emph{On products of factorials}, Bulletin of the Institute of Mathematics,
+  Academia Sinica 4 (1976), 337--355. \url{https://www.renyi.hu/~p_erdos/1976-25.pdf}.
+\item K. Matom\"aki, M. Radziwi\l\l, X. Shao, T. Tao, and J. Ter\"av\"ainen, \emph{Singmaster's conjecture
+  in the interior of Pascal's triangle}, Quarterly Journal of Mathematics 73 (2022), 1137--1177.
+  doi:10.1093/qmath/haac006. Published Proposition 1.13(ii); preprint arXiv:2106.03335.
+\item G. Harman, \emph{Primes in short intervals}, Mathematische Zeitschrift 180 (1982), 335--348.
+  doi:10.1007/BF01214174.
+\item H. L. Montgomery and R. C. Vaughan, \emph{Multiplicative Number Theory I: Classical Theory},
+  Cambridge Studies in Advanced Mathematics 97, Cambridge University Press, 2007.
+\item R. Lidl and H. Niederreiter, \emph{Finite Fields}, second ed., Encyclopedia of Mathematics and its
+  Applications 20, Cambridge University Press, 1997.
+\item T. Tao, \emph{254A, Notes 4: Some sieve theory}, January 21, 2015. \url{https://terrytao.wordpress.com/2015/01/21/254a-notes-4-some-sieve-theory/}.
+\item T. Tao, \emph{Products of consecutive integers with unusual anatomy}, arXiv:2603.27990v2, 2026.
+  \url{https://arxiv.org/abs/2603.27990}. Used for context and attribution, not as a substitute
+  for the derived higher-factor estimates.
+\item F. Yudin, \emph{Square products of factorials and a conjecture of Erd\H{o}s and Graham},
+  arXiv:2610.01899, 2026.
+\item P. X. Gallagher, \emph{A larger sieve}, Acta Arithmetica 18 (1971), 77--81.
+\end{enumerate}
+
+\end{document}
