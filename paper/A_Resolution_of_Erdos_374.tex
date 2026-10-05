@@ -20,7 +20,7 @@
 \newcommand{\sfk}{\operatorname{sf}}
 
 \title{A Resolution of Erdos 374}
-\author{Jonathan S. Hartley\thanks{Assistant Professor of Economics, UT-Austin, School of Civic Leadership, and Visiting Fellow, Hoover Institution at Stanford University. Email: \href{mailto:hartleyj@stanford.edu}{\texttt{hartleyj@stanford.edu}}. Lean files: \url{https://github.com/jon-hartley/erdos374_lean_verification}.} \and Matthew A. Olson \and Jusvin Dhillon}
+\author{Jonathan S. Hartley\thanks{Assistant Professor of Economics, UT-Austin, School of Civic Leadership, and Visiting Fellow, Hoover Institution at Stanford University. Email: \href{mailto:hartleyj@stanford.edu}{\texttt{hartleyj@stanford.edu}}. Lean files: \url{https://github.com/jon-hartley/erdos374_lean_verification}. F.~Yudin [8] has independently proved that $D_6$ has positive lower density, the main result of Theorem~1.1, as well as $D_5(X)\asymp X$; he also obtains the asymptotic in (i). The first version of this paper, containing Theorem~1.1, was posted on SSRN on 29 September 2026; [8] appeared on arXiv on 1 October 2026. The arguments for $D_6$ differ in several respects. Yudin uses Huxley's theorem on primes in short intervals [10], whereas we use Harman's almost-all theorem (2.3) in Lemma~6.1. He bounds both block lengths directly from the equidistribution estimate of [2], whereas we combine Lemma~4.1 with Corollary~6.2. He works with endpoints $n=ap$ for $a$ in a different arithmetic set, whereas we use the set $\mathcal A$ of (1.1), which yields the density statement (1.3) rather than a lower bound. For $D_3$, he uses Tao's uniform bound for Pell equations [7, Lemma~2.10], whereas we use an elementary count in Lemma~7.3.} \and Matthew A. Olson \and Jusvin Dhillon}
 \date{September 21, 2026}
 
 \begin{document}
@@ -719,8 +719,7 @@ large $a$.
 Consequently $D_k(X)\asymp X$ for $k=4,5,6$.
 \end{theorem}
 
-Part (iv) is Theorem~1.1. The constants in (ii) and (iii) are not optimized. For (i) and (iii), see
-also [8].
+Part (iv) is Theorem~1.1. The constants in (ii) and (iii) are not optimized.
 
 \begin{remark}[Formal verification]
 Theorem~\ref{thm:growth} has been verified in Lean~4 with Mathlib, on top of the formalization of
@@ -860,6 +859,7 @@ reciprocal-prime theorem to Matom\"aki, M. Radziwi\l\l, Shao, Tao, and Ter\"av\"
 \item F. Yudin, \emph{Square products of factorials and a conjecture of Erd\H{o}s and Graham},
   arXiv:2610.01899, 2026.
 \item P. X. Gallagher, \emph{A larger sieve}, Acta Arithmetica 18 (1971), 77--81.
+\item M. N. Huxley, \emph{On the difference between consecutive primes}, Inventiones Mathematicae 15 (1972), 164--170.
 \end{enumerate}
 
 \end{document}
