@@ -2,7 +2,7 @@
 
 Formal verification, in Lean 4 with Mathlib, of the results of
 
-> J. S. Hartley, M. A. Olson, J. Dhillon, *A Resolution of Erdős 374*
+> J. S. Hartley, M. A. Olson, *A Resolution of Erdős 374*
 
 For `m > 1`, `F(m)` is the least `k ≥ 2` such that `a₁! a₂! ⋯ a_k!` is a perfect square for
 some `1 ≤ a₁ < ⋯ < a_k = m`, and `D_k = {m > 1 : F(m) = k}`.
